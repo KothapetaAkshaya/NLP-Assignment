@@ -1,0 +1,201 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/KothapetaAkshaya/NLP-Assignment/blob/main/Assignment-4\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "**Assignment-4**"
+      ],
+      "metadata": {
+        "id": "2k9BhgvMBaml"
+      }
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "intents = {\n",
+        "    \"greeting\": {\n",
+        "        \"patterns\": [\"hi\", \"hello\", \"hey\"],\n",
+        "        \"responses\": [\"Hello!\", \"Hi there!\", \"Hey!\"]\n",
+        "    },\n",
+        "    \"price_query\": {\n",
+        "        \"patterns\": [\"price\", \"cost\", \"rate\"],\n",
+        "        \"responses\": [\"Please tell me the commodity name.\"]\n",
+        "    },\n",
+        "    \"goodbye\": {\n",
+        "        \"patterns\": [\"bye\", \"exit\"],\n",
+        "        \"responses\": [\"Goodbye!\", \"See you later!\"]\n",
+        "    }\n",
+        "}\n",
+        "\n",
+        "commodities = {\n",
+        "    \"potato\":  30,\n",
+        "    \"tomato\":  50,\n",
+        "    \"onion\":   40,\n",
+        "    \"rice\":    60,\n",
+        "    \"wheat\":   35,\n",
+        "    \"sugar\":   45,\n",
+        "    \"garlic\":  80,\n",
+        "    \"ginger\":  90,\n",
+        "    \"maize\":   25,\n",
+        "    \"bajra\":   28,\n",
+        "    \"dal\":     100,\n",
+        "    \"mustard\": 120\n",
+        "}\n"
+      ],
+      "metadata": {
+        "id": "Nblk2ryRBf5D"
+      },
+      "execution_count": 8,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 7,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "rzia8QE1Ph9j",
+        "outputId": "a2c4b347-3063-4db0-926c-b70d9b93bc5f"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Bot: Welcome! Ask me commodity prices or type 'list' to see all\n",
+            "You: hlo\n",
+            "Bot: I don't understand. Try asking for a price or type 'list'.\n",
+            "\n",
+            "You: hi\n",
+            "Bot: Hi there!\n",
+            "\n",
+            "You: Hello\n",
+            "Bot: Hey!\n",
+            "\n",
+            "You: price\n",
+            "Bot: The current price of Rice is ₹60 per kg.\n",
+            "\n",
+            "You: rate\n",
+            "Bot: Please tell me the commodity name.\n",
+            "\n",
+            "You: cost\n",
+            "Bot: Sorry, 'cost' is not in our list.Type 'list' to see available commodities.\n",
+            "\n",
+            "You: potatoes\n",
+            "Bot: The current price of Potato is ₹30 per kg.\n",
+            "\n",
+            "You: rice\n",
+            "Bot: The current price of Rice is ₹60 per kg.\n",
+            "\n",
+            "You: suger\n",
+            "Bot: I don't understand. Try asking for a price or type 'list'.\n",
+            "\n",
+            "You: teapower\n",
+            "Bot: I don't understand. Try asking for a price or type 'list'.\n",
+            "\n",
+            "You: exit\n",
+            "Bot: Goodbye!\n"
+          ]
+        }
+      ],
+      "source": [
+        "import random\n",
+        "\n",
+        "def get_intent(user_input):\n",
+        "    user_input = user_input.lower()\n",
+        "    for intent, data in intents.items():\n",
+        "        for pattern in data[\"patterns\"]:\n",
+        "            if pattern in user_input:\n",
+        "                return intent\n",
+        "    return \"unknown\"\n",
+        "\n",
+        "def get_commodity_price(user_input):\n",
+        "    user_input = user_input.lower()\n",
+        "    for commodity, price in commodities.items():\n",
+        "        if commodity in user_input:\n",
+        "            return f\"The current price of {commodity.title()} is ₹{price} per kg.\"\n",
+        "    return None\n",
+        "\n",
+        "def list_all_commodities():\n",
+        "    print(\"Bot: Available commodities and prices:\")\n",
+        "    for commodity, price in commodities.items():\n",
+        "        print(f\"     • {commodity.title():<12} ₹{price} per kg\")\n",
+        "\n",
+        "def chatbot():\n",
+        "    print(\"Bot: Welcome! Ask me commodity prices or type 'list' to see all\")\n",
+        "\n",
+        "    waiting_for_commodity = False\n",
+        "\n",
+        "    while True:\n",
+        "        user_input = input(\"You: \").strip()\n",
+        "\n",
+        "        if not user_input:\n",
+        "            print(\"Bot: Please type something!\\n\")\n",
+        "            continue\n",
+        "\n",
+        "        if waiting_for_commodity:\n",
+        "            price_info = get_commodity_price(user_input)\n",
+        "            if price_info:\n",
+        "                print(f\"Bot: {price_info}\\n\")\n",
+        "            else:\n",
+        "                print(f\"Bot: Sorry, '{user_input}' is not in our list.Type 'list' to see available commodities.\\n\")\n",
+        "            waiting_for_commodity = False\n",
+        "            continue\n",
+        "\n",
+        "        price_info = get_commodity_price(user_input)\n",
+        "        if price_info:\n",
+        "            print(f\"Bot: {price_info}\\n\")\n",
+        "            continue\n",
+        "\n",
+        "        intent = get_intent(user_input)\n",
+        "\n",
+        "        if intent == \"greeting\":\n",
+        "            print(f\"Bot: {random.choice(intents[intent]['responses'])}\\n\")\n",
+        "\n",
+        "        elif intent == \"price_query\":\n",
+        "            print(f\"Bot: {random.choice(intents[intent]['responses'])}\\n\")\n",
+        "            waiting_for_commodity = True\n",
+        "\n",
+        "        elif intent == \"list_commodities\":\n",
+        "            list_all_commodities()\n",
+        "            print()\n",
+        "\n",
+        "        elif intent == \"goodbye\":\n",
+        "            print(f\"Bot: {random.choice(intents[intent]['responses'])}\")\n",
+        "            break\n",
+        "\n",
+        "        else:\n",
+        "            print(\"Bot: I don't understand. Try asking for a price or type 'list'.\\n\")\n",
+        "\n",
+        "chatbot()"
+      ]
+    }
+  ],
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMujUhP3MtkqYtck3JmMrdz",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
